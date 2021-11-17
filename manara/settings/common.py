@@ -11,10 +11,11 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 
 from pathlib import Path
-# import environ
+import environ 
+# Initialise environment variables
+env = environ.Env()
+environ.Env.read_env()
 
-# env = environ.Env()
-# environ.Env.read_env()
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -23,11 +24,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-j6$pc8m8knv0(mbwwj*=cw@uz4bnov)4e@5r1#n4_w4di9cmm9'
 
 
 
-ALLOWED_HOSTS = []
+
 
 
 # Application definition
@@ -40,6 +40,10 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'rest_framework.authtoken',
+    'djoser',
+    'apps.account',
+    'apps.school',
 ]
 
 MIDDLEWARE = [
@@ -72,16 +76,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'manara.wsgi.application'
 
-
-# Database
-# https://docs.djangoproject.com/en/3.2/ref/settings/#databases
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
-}
 
 
 # Password validation
@@ -126,3 +120,48 @@ STATIC_URL = '/static/'
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+# AUTH_USER_MODEL = "account.models.user"
+# Rest Framework Configurations
+REST_FRAMEWORK = {
+    # Use Django's standard `django.contrib.auth` permissions,
+    # or allow read-only access for unauthenticated users.
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
+    ],
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.TokenAuthentication',
+    ),
+}
+# DJOSER Configurations
+DJOSER = {
+    # 'PASSWORD_RESET_CONFIRM_URL': '#/password/reset/confirm/{uid}/{token}',
+    # 'USERNAME_RESET_CONFIRM_URL': '#/username/reset/confirm/{uid}/{token}',
+    # 'SERIALIZERS': {},
+    "ACTIVATION_URL": "activate/{uid}/{token}",
+    'USER_CREATE_PASSWORD_RETYPE': True,
+    "LOGIN_FIELD": "email",
+    "USER_ID_FIELD": "username",
+    'SEND_CONFIRMATION_EMAIL': True,
+    "SEND_ACTIVATION_EMAIL": True,
+    'PASSWORD_RESET_CONFIRM_URL': 'password/reset/confirm/{uid}/{token}',
+    'PASSWORD_CHANGED_EMAIL_CONFIRMATION': True,
+    'SET_PASSWORD_RETYPE': True,
+    'LOGOUT_ON_PASSWORD_CHANGE': True
+}
+SITE_NAME = "Manara"
+
+# Custom User Model Settings
+AUTH_USER_MODEL = 'account.Student'
+
+
+# Email Backend Settings
+
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'brahimiayoub82@gmail.com'
+EMAIL_HOST_PASSWORD = 'aze1232000'
+EMAIL_USE_TLS = True
+
+# APPEND_SLASH=False
